@@ -1,6 +1,7 @@
 #include "src/person/interaction.h"
 #include "src/person/person.h"
 #include "src/person/util.h"
+#include "src/game/game.h"
 #include <iostream>
 
 int main() {
@@ -22,6 +23,25 @@ int main() {
   std::cout << "\n\n" << std::endl;
   for (auto person : people) {
     person->printRelationships();
+  }
+
+
+
+
+  // game functionality 
+  float rating_outcome = outcome(people);
+  std::cout << "Average relationship rating: " << rating_outcome << std::endl;
+    
+  if (rating_outcome <= 5) {
+      std::cout << "The town devolved. You lose." << std::endl;
+  } 
+  else {
+      std::cout << "The town did not devolve. You win. " << std::endl;
+  }
+  
+
+  for (Person* p : people) {
+      delete p;
   }
 
   return EXIT_SUCCESS;
