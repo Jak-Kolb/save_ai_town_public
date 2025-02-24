@@ -10,6 +10,7 @@ struct Relationship {
     std::string name;
     int rating;
     std::string word;
+    std::string last_interaction;
 };
 
 class Person {
@@ -32,7 +33,8 @@ public:
     void printRelationships() const {
         std::cout << name << "'s relationships: " << std::endl;
         for (auto relationship : relationships) {
-            std::cout << "\t" << relationship.second.name << ": " << relationship.second.rating << "," << relationship.second.word << std::endl;
+            std::cout << "\t" << relationship.second.name << ": " << relationship.second.rating << "," 
+            << relationship.second.word << "\n" << std::endl; // ",\nLast Interaction:\n" << relationship.second.last_interaction << "\n" << std::endl;
         }
     }
 
@@ -43,10 +45,26 @@ public:
     double weight;
 
     Prompt prompt;
-private:
-    // hidden personality and relationships
+
+    static void initializeRelationships(std::vector<Person*>& people) {
+        for (auto* person : people) {
+            for (auto* other : people) {
+                if (person->id != other->id) {
+                        person->relationships[other->id] = {other->name, 5, ""};
+                    }
+                }
+            }
+        }
+        const std::map<int, Relationship>& getRelationships() const {
+        return relationships;}
+
+// private:
     Personality *personality;
     std::map<int, Relationship> relationships;
+    
+
+    // hidden personality and relationships
+
 };
 
 #endif // PERSON_H

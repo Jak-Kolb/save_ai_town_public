@@ -24,9 +24,8 @@ static Person* get_person_by_name(std::vector<Person *> people, std::string name
     return nullptr;
 }
 
-void interact_human(std::vector<Person *> people, int sentence_count) {
+void interact_human(Person *user_person, std::vector<Person *> people, int sentence_count) {
 
-    Person *user_person = new Person(1000, "Jimmy", 5.0, 500.0, personalityFactory(), Prompt::GOOD);
     // 1. decide who to interact with 
     // 2. See what they say when you "approach"
     // 3. What does user say to them 
@@ -68,6 +67,8 @@ void interact_human(std::vector<Person *> people, int sentence_count) {
         std::cout << sentences.back() << std::endl;
     }
 
+    std::string conversation = build_sentences(sentences);
+    ai_person->relationships[user_person->id].last_interaction = conversation;
     // std::cout << "Convo:" << build_sentences(sentences) << std::endl;
 }
 
@@ -76,6 +77,11 @@ void interact(Person *person_a, Person *person_b, int sentence_count)
     std::vector<std::string> sentences;
     std::string headerA = person_a->getHeader(person_b);
     std::string headerB = person_b->getHeader(person_a);
+    // std::cout << "Conversation between " << person_a->name << "," << person_b->name << ":\n" << std::endl;
+    // std::cout << "-------------------\n" << std::endl;
+    // std::cout << "person A Header" << headerA << std::endl;
+    // std::cout << "-------------------\n" << std::endl;
+    // std::cout << "person B Header" << headerB << std::endl;
     
     for (int i = 0; i < sentence_count; i++)
     {
@@ -87,13 +93,20 @@ void interact(Person *person_a, Person *person_b, int sentence_count)
         sentences.push_back(person_b->name + ": " + res.sentence);
         headerB = person_b->receiveAction(person_a, res);
     }
-    std::cout << "Conversation between " << person_a->name << "," << person_b->name << ":\n" << build_sentences(sentences) << std::endl;
+
+    std::string conversation = build_sentences(sentences); // save last interaction to both people
+    person_a->relationships[person_b->id].last_interaction = conversation;
+    person_b->relationships[person_a->id].last_interaction = conversation;
+    // relationships.at(person_b->id).last_interaction = res.sentence;  
+    // relationships.at(person_a->id).last_interaction = res.sentence;  
+
+    std::cout << "Conversation between " << person_a->name << "," << person_b->name << ":\n" << conversation << std::endl;
     person_a->printRelationships();
     person_b->printRelationships();
     std::cout <<"-------------------\n\n" << std::endl;
 }
 
-void round_robin_interaction(std::vector<Person *> people, int interaction_count, int sentence_count)
+void round_robin_interaction(Person *user_person, std::vector<Person *> people, int interaction_count, int sentence_count)
 {
     if (people.size() < 2)
         return;
@@ -125,6 +138,6 @@ void round_robin_interaction(std::vector<Person *> people, int interaction_count
 
             interact(person_a, person_b, sentence_count);
         }
-        // interact_human(people, sentence_count);
+        interact_human(user_person, people, sentence_count);
     }
 }

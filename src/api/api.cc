@@ -1,4 +1,5 @@
 #include "api.h"
+#include <future>
 #include <yaml-cpp/yaml.h>
 
 using json = nlohmann::json;
@@ -17,7 +18,7 @@ Response getAction(std::string header, std::string body, Prompt prompt)
   };
   std::string apiKey = std::string(OPENAI_API_KEY);
   std::string fullText = std::string(prompt_str) + std::string(header) + std::string(body);
-  
+  // std::cout << "\n\nThis is what you see: \n\n"<< fullText << std::endl;
   json HelloRequest = {
     {"model", "gpt-4o-mini"},
     {"temperature", 0.7},
@@ -35,8 +36,9 @@ Response getAction(std::string header, std::string body, Prompt prompt)
   cli.enable_server_certificate_verification(true);
   cli.set_default_headers({{"Content-Type", "application/json"},
                            {"Authorization", "Bearer " + apiKey}});
-
+  // std::cout << prompt_str << std::endl;
   auto res = cli.Post("/v1/chat/completions", HelloRequest.dump(), "application/json");
+  // std::cout << "Send\n\n\n: " << std::endl;
 
   if (!res)
   {
@@ -62,3 +64,9 @@ Response getAction(std::string header, std::string body, Prompt prompt)
     content["relationship"]["description"]
   };
 }
+
+// std::future<Response> asyncGetAction(std::string header, std::string body, Prompt prompt) {
+//   return std::async(std::launch::async, [=]() {
+//       return getAction(header, body, prompt);
+//   });
+// }
