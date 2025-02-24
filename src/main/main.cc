@@ -11,15 +11,15 @@ int main() {
   }
   Person::initializeRelationships(people);
 
-  Person *user_person = new Person(1000, "Jimmy", 5.0, 500.0, personalityFactory(), Prompt::GOOD);
+  // Person *user_person = new Person(1000, "Jimmy", 5.0, 500.0, personalityFactory(), Prompt::GOOD);
 
-  for (auto* person : people) {
-    if (person->relationships.find(user_person->id) == person->relationships.end()) {
-        person->relationships[user_person->id] = {user_person->name, 5, ""};
-    }
-  }
+  // for (auto* person : people) {
+  //   if (person->relationships.find(user_person->id) == person->relationships.end()) {
+  //       person->relationships[user_person->id] = {user_person->name, 5, ""};
+  //   }
+  // }
   // interact(people.at(0), people.at(1), 3);
-  round_robin_interaction(user_person, people, 3, 1);
+  round_robin_interaction(people, 2, 1);
 
   std::cout << "\n\n" << std::endl;
   for (auto person : people) {
@@ -28,7 +28,7 @@ int main() {
 
 
 
-
+  finalAssessmentEach(people);
   // game functionality 
   float rating_outcome = outcome(people);
   std::cout << "Average relationship rating: " << rating_outcome << std::endl;
